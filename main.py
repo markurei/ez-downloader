@@ -197,9 +197,6 @@ def main():
             input("\nPress [Enter] to exit ")
             os._exit(0)
 
-        verifyAllDownloadedFiles(path, dl_links)
-        exit()
-
         printGreen("\nOK!")
         printViolet("\nDownload Information")
         print(f"File Hoster: {file_hoster}\nNumber of Files: ", end="")
