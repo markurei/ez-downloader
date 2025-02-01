@@ -15,6 +15,7 @@ downloader_instance = None
 path = ""
 all_links = []
 dl_links = []
+skip_optional = False
 
 def getDownloadFileSize(size_results):
     size_bytes = float(0.0)
@@ -25,11 +26,11 @@ def getDownloadFileSize(size_results):
                 size_bytes = float(size.replace("MB",""))
             elif "KB" in size:
                 size_bytes = float(size.replace("KB","")) * 1024
-    return round(size_bytes, 0)
+    return round(size_bytes, 1)
 
 def getLocalFileSize(file_path):
     file_stats = os.stat(file_path)
-    return round(file_stats.st_size / (1024 * 1024),0)
+    return round(file_stats.st_size / (1024 * 1024), 1)
 
 def getTotalDownloadSize(data):
     size = repack_size
@@ -125,6 +126,22 @@ def main():
             input("\nPress [Enter] to exit ")
             os._exit(0)
 
+        print("\nSkip optional language/mod/textures pack/video files? [Y/N]: ")
+        print('\033[33m', end="")
+        while(True):
+            print("\033[K", end="\r")
+            tmp = input()            
+            if(tmp.capitalize() == "Y"):
+                skip_optional = True
+                break
+            elif(tmp.capitalize() == "N"):
+                skip_optional = False
+                break
+            else:
+                print("\033[A", end="\r")
+                continue
+        print('\033[39m', end="")
+
         # Send a GET request to the URL
         print("\n• Checking available links...")
         response = requests.get(target_url)
@@ -141,6 +158,11 @@ def main():
         # Get all links
         for link in links:
             if file_hoster in link.get('href'):
+                if skip_optional:
+                    if "fg-optional-bonus" in link.text or "fg-selective-bonus" in link.text:
+                        pass
+                    elif "fg-optional" in link.text or "fg-selective" in link.text:
+                        continue
                 all_links.append({
                     "file_name": link.text,
                     "url": link.get('href')
@@ -174,6 +196,9 @@ def main():
             printRed("\nError: No direct links were found!")
             input("\nPress [Enter] to exit ")
             os._exit(0)
+
+        verifyAllDownloadedFiles(path, dl_links)
+        exit()
 
         printGreen("\nOK!")
         printViolet("\nDownload Information")
