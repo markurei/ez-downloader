@@ -3,6 +3,10 @@
 
 A utility to easily download games from specific sites.
 
+<h1 align="center">
+	<img src="https://raw.githubusercontent.com/markurei/steam-input-disabler/main/images/screenshot.png"  alt="Screenshot"  width="450px"></a>
+</h1>
+
 ## Getting Started
 
 ### Download
